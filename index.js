@@ -83,7 +83,8 @@ function logBench(bench, tolerances) {
     , id = bench.id
     , stats = bench.stats
     , size = stats.sample.length
-    , result = bench.name || (Number.isNaN(id) ? id : '<Test #' + id + '>')
+    , name = bench.name || (Number.isNaN(id) ? id : '<Test #' + id + '>')
+    , result = name
     , name_len = result.length
     , ops = hz.toFixed(hz < 100 ? 2 : 0)
     , deviation = stats.rme.toFixed(2)
@@ -102,6 +103,13 @@ function logBench(bench, tolerances) {
         : percent > (tolerances.mid  || .80)  ? 'medium'
         : 'slow', formatNumber(ops))
       + ' ops/sec '
+      + color(
+          percent > (tolerances.pass || .95)  ? 'green'
+        : percent > (tolerances.mid  || .80)  ? 'medium'
+        : 'slow', 
+          (ops == ops_top) ? 
+            'fastest ' :
+            (Math.round((100-getPercent(name))*100)/100) + '% slower ')
       + color('pass', '\xb1')
       + color(
           deviation > 5 ? 'slow'
